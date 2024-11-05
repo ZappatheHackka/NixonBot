@@ -1,7 +1,7 @@
 import os
 import re
 import pymupdf
-
+import ast
 
 dialogue_files = []
 directory = 'trainingdata/'
@@ -13,9 +13,21 @@ for file in os.listdir(directory):
     path = os.path.join(directory, file)
     doc = pymupdf.open(path)
     for page in doc:
-        nix_pat = r"(?:RN|PRESIDENT):((?:\n(?!\n)|.)+?)(?=\n\n|\Z)"
+        nix_pat = r"PRESIDENT:\s*((?:[^\n]+(?:\n(?![A-Z]+:))?)*)"
         page_text = page.get_text()
         nixonspeech = re.findall(nix_pat, page_text)
         dialogue_files.append(nixonspeech)
 
-print(dialogue_files)
+
+clean = []
+
+# print(dialogue_files)
+# print(len(dialogue_files))
+
+
+for page in dialogue_files:
+    page = str(page)
+    page1 = page.replace(r"\\", " ")
+    page2 = page1.replace(r"\n", " ")
+    clean.append(page2.strip())
+print(clean)
